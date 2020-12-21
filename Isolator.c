@@ -9,7 +9,7 @@ Double_t xstep=0.01,tstep=0.000001,func_delta=0.000484;//步长
 clock_t start,finish;
 Double_t xmin=0,xmax=2.0,tmin=0.0,tmax=8.0;//自变量范围
 Double_t flag=0;
-Int_t timestochange=(Int_t)(0.1/tstep);
+Int_t timestochange=(Int_t)(0.01/tstep);
 Int_t loop_index=0,loop_jndex=0;//循环指标
 Int_t number_in_x=(Int_t)((xmax-xmin)/xstep)+1;
 Int_t number_in_t=(Int_t)((tmax-tmin)/tstep)+1;
