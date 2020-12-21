@@ -5,10 +5,11 @@
 #include "function.h"
 #include "function.c"
 #include <time.h>
-Double_t xstep=0.1,tstep=0.001,func_delta=0.000484;//步长
+Double_t xstep=0.01,tstep=0.000001,func_delta=0.000484;//步长
 clock_t start,finish;
-Double_t xmin=0,xmax=2.0,tmin=0.0,tmax=4.0;//自变量范围
-Int_t timestochange=(Int_t)(1.0/tstep);
+Double_t xmin=0,xmax=2.0,tmin=0.0,tmax=8.0;//自变量范围
+Double_t flag=0;
+Int_t timestochange=(Int_t)(0.1/tstep);
 Int_t loop_index=0,loop_jndex=0;//循环指标
 Int_t number_in_x=(Int_t)((xmax-xmin)/xstep)+1;
 Int_t number_in_t=(Int_t)((tmax-tmin)/tstep)+1;
@@ -39,7 +40,7 @@ void Isolator()
    gStyle->SetFrameFillColor(10);
    TCanvas *c1 = new TCanvas("c1");
    c1->SetFillColor(17);
-   TTimer *timer = new TTimer(10);
+   TTimer *timer = new TTimer(1);
    //timer->SetCommand("Animate(xvalues,yvalue,yyvalue,number_in_x,factor_left,factor_right,graphtest)");
    timer->SetCommand("Animate()");
    timer->TurnOn();
@@ -48,14 +49,15 @@ void Isolator()
 void Animate()
 {
     start=clock();
-    if (!gROOT->GetListOfCanvases()->FindObject("c1")) return;
+    if (!gROOT->GetListOfCanvases()->FindObject("c1")||(flag>tmax)) return;
     loop_index=0;
-    for(loop_index=0;loop_index<1;loop_index++)
+    for(loop_index=0;loop_index<timestochange;loop_index++)
     {
+        flag=flag+tstep;
         loop_jndex=2;
         yyvalue[0]=funcvalues[0][0]-factor_second*(funcvalues[1][1]+funcvalues[1][0]+funcvalues[1][number_in_x-2])*(funcvalues[1][1]-funcvalues[1][number_in_x-2])-factor_third*(funcvalues[1][2]-2.0*funcvalues[1][1]+2.0*funcvalues[1][number_in_x-2]-funcvalues[1][number_in_x-3]);
         yyvalue[1]=funcvalues[0][1]-factor_second*(funcvalues[1][2]+funcvalues[1][1]+funcvalues[1][0])*(funcvalues[1][2]-funcvalues[1][0])-factor_third*(funcvalues[1][3]-2.0*funcvalues[1][2]+2.0*funcvalues[1][0]-funcvalues[1][number_in_x-2]);
-        yyvalue[number_in_x-1]=funcvalues[loop_index][0];//周期性边界
+        yyvalue[number_in_x-1]=yyvalue[0];//周期性边界
         yyvalue[number_in_x-2]=funcvalues[0][number_in_x-2]-factor_second*(funcvalues[1][number_in_x-1]+funcvalues[1][number_in_x-2]+funcvalues[1][number_in_x-3])*(funcvalues[1][number_in_x-1]-funcvalues[1][number_in_x-3])-factor_third*(funcvalues[1][1]-2.0*funcvalues[1][0]+2.0*funcvalues[1][number_in_x-3]-funcvalues[1][number_in_x-4]);
         for(loop_jndex=2;loop_jndex<number_in_x-2;loop_jndex++)
         {
